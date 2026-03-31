@@ -7,8 +7,9 @@
 
 <script>
   // ✅ التحقق المبكر قبل تحميل أي شيء
-  if(localStorage.getItem("userName") && localStorage.getItem("introShown")==="true"){
-      window.location.replace("home.html");
+  // قمنا بتعديل الوجهة هنا لتكون fields.html بدلاً من home.html
+  if(localStorage.getItem("userName") && localStorage.getItem("introShown") === "true"){
+      window.location.replace("fields.html"); 
   }
 </script>
 
