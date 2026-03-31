@@ -86,16 +86,17 @@ button:hover{
 
     <button onclick="start()">ابدأ الآن</button>
 </div>
-
 <script>
-// التأكد إذا المستخدم دخل الصفحة قبلًا
+// 1. التأكد إذا المستخدم دخل الصفحة قبلًا
+// قمنا بتغيير الوجهة هنا من home.html إلى fields.html
 if(localStorage.getItem("introShown") === "true"){
-    window.location.href = "home.html";
+    window.location.href = "fields.html"; 
 }
 
+// 2. عند الضغط على زر "ابدأ الآن"
 function start(){
     localStorage.setItem("introShown","true");
-    window.location.href = "home.html";
+    window.location.href = "fields.html"; // التوجه للحاوية التي تحتوي التبويبات
 }
 </script>
 
