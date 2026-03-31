@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة الإشعارات</title>
+
+<script>
+    // ✅ قفل الأمان - سيطلب كلمة المرور فور فتح الصفحة
+    const pass = prompt("يرجى إدخال رمز الوصول للإدارة:");
+    if (pass !== "77425") { // استبدل 77425 بكلمة المرور التي تريدها
+        alert("وصول غير مصرح به!");
+        window.location.href = "home.html"; // طرده لصفحة الهوم
+    }
+</script>
+
+<style>
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #1b1e33; color: white; padding: 20px; text-align: center; }
+    .admin-box { background: white; color: #333; padding: 30px; border-radius: 20px; max-width: 500px; margin: 50px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    input, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; font-family: inherit; }
+    button { width: 100%; padding: 15px; border: none; border-radius: 12px; background: linear-gradient(45deg, #c9b36a, #b89b4a); color: #1b1e33; font-weight: bold; cursor: pointer; font-size: 16px; }
+    button:active { transform: scale(0.98); }
+</style>
+</head>
+<body>
+
+    <div class="admin-box">
+        <h2 style="color: #b89b4a;">📢 لوحة بث الإشعارات</h2>
+        <p style="font-size: 14px; color: #666;">الأخبار المنشورة هنا ستظهر فوراً عند جميع الزبائن</p>
+        
+        <input type="text" id="n-title" placeholder="عنوان الخبر (مثال: عروض نهاية الأسبوع)">
+        <textarea id="n-body" rows="5" placeholder="اكتب تفاصيل الخبر هنا..."></textarea>
+        
+        <button onclick="publishNews()">نشر الإشعار الآن ✅</button>
+        <p id="status" style="margin-top:10px; font-size:13px; color: green; display:none;">تم النشر بنجاح!</p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <script>
+        // إعدادات Firebase الخاصة بك (نفس الموجودة في الهوم)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMEoUTIMAS0mh06_SxrM2T_efDxEmEoxg",
+            authDomain: "wafaseiyunshop.firebaseapp.com",
+            databaseURL: "https://wafaseiyunshop-default-rtdb.firebaseio.com",
+            projectId: "wafaseiyunshop",
+            storageBucket: "wafaseiyunshop.firebasestorage.app",
+            messagingSenderId: "101115796279",
+            appId: "1:101115796279:web:3753efad2a443c9b6098b2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function publishNews() {
+            const title = document.getElementById("n-title").value.trim();
+            const body = document.getElementById("n-body").value.trim();
+            const date = new Date().toLocaleDateString('ar-EG');
+
+            if(!title || !body) { alert("أكمل البيانات أولاً"); return; }
+
+            database.ref("news").push({
+                title: title,
+                body: body,
+                date: date
+            }).then(() => {
+                document.getElementById("status").style.display = "block";
+                document.getElementById("n-title").value = "";
+                document.getElementById("n-body").value = "";
+                setTimeout(() => document.getElementById("status").style.display = "none", 3000);
+            }).catch(err => alert("خطأ في الاتصال"));
+        }
+    </script>
+</body>
+</html>
