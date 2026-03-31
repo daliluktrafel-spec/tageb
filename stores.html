@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المتاجر</title>
+
+<!-- خط كوفي جميل -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(to bottom,#f7f6f2,#e9e4cf);
+}
+
+/* العنوان */
+h2 {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 26px;
+    color: #1b1e33;
+}
+
+/* شبكة المتاجر */
+.store-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 18px;
+    padding: 30px;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* بطاقة المتجر */
+.store-card {
+    background: linear-gradient(145deg,#e6d38a,#c9b36a,#b89b4a);
+    color: #1b1e33;
+    padding: 22px 10px;
+    border-radius: 18px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    transition: 0.25s;
+}
+
+/* تأثير عند المرور */
+.store-card:hover {
+    transform: translateY(-6px) scale(1.04);
+    box-shadow: 0 12px 22px rgba(0,0,0,0.35);
+}
+</style>
+</head>
+
+<body>
+
+<h2>اختر المتجر لإضافة المنتجات</h2>
+
+<div class="store-list" id="store-list"></div>
+
+<!-- Firebase App (core) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<!-- Firebase Realtime Database -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="firebase.js"></script>
+<script>
+
+window.onload = function(){
+
+  const container = document.getElementById("store-list");
+
+  database.ref("storePasswords").once("value").then(snapshot => {
+      const storesData = snapshot.val();
+      if(storesData){
+          Object.keys(storesData).forEach(storeName => {
+              const name = storeName.trim();
+              const card = document.createElement("div");
+              card.className = "store-card";
+              card.innerText = name;
+
+              card.onclick = () => {
+                  localStorage.setItem("selectedStore", name);
+                  window.location.href = "store-login.html";
+              };
+
+              container.appendChild(card);
+          });
+      } else {
+          container.innerHTML = "لا توجد متاجر";
+      }
+  }).catch(err => {
+      console.error(err);
+      container.innerHTML = "خطأ تحميل المتاجر";
+  });
+
+}
+</script>
+
+</body>
+</html>

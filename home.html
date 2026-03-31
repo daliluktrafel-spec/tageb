@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>منصة متاجر البلاد</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    background: linear-gradient(
+        to bottom,
+        #f7f6f2 0%,
+        #2c2f4a 25%,
+        #1b1e33 75%,
+        #f7f6f2 100%
+    );
+    color: #2b2b2b;
+}
+
+.header {
+    background: linear-gradient(45deg,#c9b36a,#b89b4a,#e6d38a);
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #1b1e33;
+    position: relative;
+}
+
+.fav-top {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    background: white;
+    color: #b89b4a;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.categories {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    overflow-x: auto;
+}
+
+.category-btn {
+    flex: 0 0 auto;
+    min-width: 110px;
+    background: white;
+    border: 2px solid #b89b4a;
+    border-radius: 12px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #1b1e33;
+}
+.category-btn:hover {
+    background: linear-gradient(45deg,#c9b36a,#b89b4a);
+}
+
+@media (max-width: 600px) {
+    .category-btn {
+        min-width: 80px;
+        padding: 6px;
+        font-size: 12px;
+    }
+}
+
+.container {
+    display: grid;
+   grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 18px;
+    padding: 12px;
+    text-align: center;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.18);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition:.25s;
+}
+
+.card{
+    gap: 4px;
+}
+
+.card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+}
+
+.product-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-bottom: 8px;
+}
+
+.product-name { font-weight: bold; font-size: 15px; }
+.product-price { color: #b89b4a; font-weight: bold; }
+.product-store { color: #3f4a7a; font-size: 14px; }
+.product-status { color: #7a6a3a; font-size: 13px; }
+
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #ffffffcc;
+}
+
+.fav-btn{
+    border:none;
+    background:#f2f3f7;
+    padding:8px;
+    border-radius:10px;
+    margin-top:auto;
+    font-weight:bold;
+}
+
+.tab {
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 2px solid #b89b4a;
+    font-weight: bold;
+    background: #f7f6f2;
+    cursor: pointer;
+    color: #1b1e33;
+}
+
+.tab.active {
+    background: linear-gradient(45deg,#c9b36a,#b89b4a);
+}
+</style>
+</head>
+
+<body>
+
+<div class="header" id="welcome">
+    مرحبا بك
+    <div class="fav-top" onclick="showFavorites()">❤️ <span id="favCount">0</span></div>
+</div>
+
+<div id="categories" class="categories"></div>
+
+<div style="padding:15px;text-align:center;">
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 ابحث عن منتج أو متجر..."
+        oninput="smartSearch()"
+        style="width:90%;max-width:400px;padding:12px;border-radius:12px;"
+    >
+</div>
+
+<div id="favorites" class="container" style="display:none;"></div>
+<div id="all" class="container"></div>
+<div id="available" class="container" style="display:none;"></div>
+<div id="stores" class="container" style="display:none;"></div>
+
+<div class="tabs">
+    <div class="tab active" onclick="showSection('all',this)">كل البضائع</div>
+    <div class="tab" onclick="showSection('available',this)">المتوفر</div>
+    <div class="tab" onclick="showSection('stores',this)">المتاجر</div>
+    <div class="tab" onclick="openAddProduct()">إضافة منتج</div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+ apiKey: "AIzaSyAMEoUTIMAS0mh06_SxrM2T_efDxEmEoxg",
+ authDomain: "wafaseiyunshop.firebaseapp.com",
+ databaseURL: "https://wafaseiyunshop-default-rtdb.firebaseio.com",
+ projectId: "wafaseiyunshop",
+ storageBucket: "wafaseiyunshop.firebasestorage.app",
+ messagingSenderId: "101115796279",
+ appId: "1:101115796279:web:3753efad2a443c9b6098b2"
+};
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+let products = [];
+
+database.ref("products").on("value", snap => {
+    const data = snap.val() || {};
+    products = Object.values(data).sort((a,b)=> b.id - a.id);
+
+    renderCategories();
+    renderProducts("all");
+});
+
+</script>
+
+
+<script src="dictionary.js"></script>
+<script src="search-dictionary.js"></script>
+
+<script>
+const userName = localStorage.getItem("userName") || "مستخدم";
+const userRegion = localStorage.getItem("userRegion") || "";
+document.getElementById("welcome").childNodes[0].nodeValue =
+`مرحبًا ${userName} ${userRegion}`;
+
+let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+document.getElementById("favCount").innerText = favorites.length;
+
+function filterByCategory(key){
+    showSection("all");
+    renderProducts("all", p => p.category === key);
+}
+
+function isAvailable(product) {
+    const status = normalizeArabic(product.status || "");
+    if (status.includes("غير متوفر")) return false;
+    return true;
+}
+
+function shortName(text, max = 45){
+    return text.length > max ? text.slice(0, max) + "…" : text;
+}
+
+function getStoresList(){
+    return [...new Set(products.map(p => p.store))];
+}
+
+function renderProducts(containerId, filter = () => true){
+    const c = document.getElementById(containerId);
+    c.innerHTML = "";
+
+    products.filter(filter).forEach(p=>{
+        const d = document.createElement("div");
+        d.className = "card";
+
+        d.innerHTML = `
+            <div class="product-img" style="background-image:url('${p.image || "no-image.png"}')"></div>
+            <div class="product-name">${shortName(p.name)}</div>
+            <div class="product-price">${p.price}</div>
+            <div class="product-store">${p.store}</div>
+            <div class="product-status">${p.status}</div>
+            <button class="fav-btn">
+                ❤️ ${favorites.includes(Number(p.id)) ? 'إزالة من المفضلة' : 'أضف للمفضلة'}
+            </button>
+        `;
+
+        d.onclick = (e)=>{
+            if(e.target.tagName !== 'BUTTON'){
+                location.href = `product.html?productId=${p.id}`;
+            }
+        };
+
+        d.querySelector(".fav-btn").onclick = (e)=>{
+            e.stopPropagation();
+            const id = Number(p.id);
+
+            if(favorites.includes(id))
+                favorites = favorites.filter(fid=>fid!==id);
+            else
+                favorites.push(id);
+
+            localStorage.setItem("favorites", JSON.stringify(favorites));
+            document.getElementById("favCount").innerText = favorites.length;
+            renderProducts(containerId, filter);
+        };
+
+        c.appendChild(d);
+    });
+}
+
+function renderStores(){
+    const c = document.getElementById("stores");
+    c.innerHTML = "";
+
+    getStoresList().forEach(s=>{
+        const d = document.createElement("div");
+        d.className = "card";
+        d.innerText = s;
+        d.onclick = ()=>renderProducts("stores", p=>p.store===s);
+        c.appendChild(d);
+    });
+}
+
+function showFavorites(){
+    showSection("favorites");
+    renderProducts("favorites", p=>favorites.includes(Number(p.id)));
+}
+
+function showSection(id,el){
+    ["favorites","all","available","stores"].forEach(s=>{
+        document.getElementById(s).style.display="none";
+    });
+
+    document.getElementById(id).style.display="grid";
+
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    if(el) el.classList.add("active");
+
+    if(id === "stores")
+        document.getElementById("categories").style.display = "none";
+    else
+        document.getElementById("categories").style.display = "flex";
+
+    if(id==="stores") renderStores();
+    else if(id==="all") renderProducts("all");
+    else if(id==="available")
+        renderProducts("available", p => isAvailable(p));
+}
+
+function openAddProduct(){
+    window.location.href = "stores.html";
+}
+
+function renderCategories() {
+    const categoriesDiv = document.getElementById("categories");
+    categoriesDiv.innerHTML = "";
+
+    const categoriesList = [...new Set(products.map(p => p.category).filter(c => c))];
+
+    categoriesList.forEach(cat => {
+        const btn = document.createElement("div");
+        btn.className = "category-btn";
+        btn.innerText = cat;
+        btn.onclick = () => filterByCategory(cat);
+        categoriesDiv.appendChild(btn);
+    });
+}
+/* عرض أوليي آمن */
+setTimeout(()=>{
+    renderCategories();
+    renderProducts("all");
+},500);
+
+</script>
+
+</body>
+</html>

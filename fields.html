@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متاجر البلاد - الأقسام</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Cairo', sans-serif;
+        background-color: #f7f6f2;
+        overflow-x: hidden;
+    }
+
+    /* شريط التنقل العلوي */
+    .top-navbar {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background: linear-gradient(45deg, #c9b36a, #b89b4a);
+        padding: 12px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .nav-link {
+        color: #1b1e33;
+        text-decoration: none;
+        text-align: center;
+        flex: 1;
+        font-size: 13px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        opacity: 0.7;
+    }
+
+    .nav-link.active {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .nav-link i {
+        display: block;
+        font-size: 22px;
+        margin-bottom: 3px;
+    }
+
+    /* حاوية المحتوى المغير */
+    #main-frame {
+        width: 100%;
+        height: calc(100vh - 70px); /* طرح طول الناف بار */
+        border: none;
+        display: block;
+    }
+</style>
+</head>
+<body>
+
+<div class="top-navbar">
+    <div class="nav-link active" onclick="loadPage('home.html', this)">
+        <span>🏠</span><br>الرئيسية
+    </div>
+    <div class="nav-link" onclick="loadPage('notifications.html', this)">
+        <span>🔔</span><br>الإشعارات
+    </div>
+    <div class="nav-link" onclick="loadPage('contact.html', this)">
+        <span>📞</span><br>اتصل بنا
+    </div>
+    <div class="nav-link" onclick="loadPage('create-store.html', this)">
+        <span>🏪</span><br>إنشاء متجر
+    </div>
+</div>
+
+<iframe src="home.html" id="main-frame" name="main-frame"></iframe>
+
+<script>
+    function loadPage(pageUrl, element) {
+        // تغيير الصفحة داخل الإطار
+        document.getElementById('main-frame').src = pageUrl;
+
+        // تحديث شكل الأزرار (تحديد الزر النشط)
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        element.classList.add('active');
+    }
+
+    // كود لحل مشكلة الارتفاع في بعض المتصفحات
+    window.addEventListener('resize', function() {
+        let h = window.innerHeight - 70;
+        document.getElementById('main-frame').style.height = h + "px";
+    });
+</script>
+
+</body>
+</html>

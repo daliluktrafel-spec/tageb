@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الإشعارات - متاجر البلاد</title>
+<style>
+    body {
+        margin: 0;
+        padding: 15px;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background: #f7f6f2;
+        color: #1b1e33;
+    }
+
+    .loader {
+        text-align: center;
+        padding: 50px;
+        color: #b89b4a;
+        font-weight: bold;
+    }
+
+    .notif-card {
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border-right: 5px solid #b89b4a;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    .notif-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .notif-title {
+        font-weight: bold;
+        font-size: 17px;
+        color: #1b1e33;
+    }
+
+    .notif-date {
+        color: #888;
+        font-size: 12px;
+    }
+
+    .notif-content {
+        font-size: 14px;
+        color: #555;
+        line-height: 1.6;
+        display: none; /* مخفي افتراضياً ويظهر عند النقر */
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+    }
+
+    .notif-summary {
+        font-size: 14px;
+        color: #666;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .notif-card.active .notif-content {
+        display: block;
+    }
+
+    .notif-card.active .notif-summary {
+        display: none;
+    }
+</style>
+</head>
+<body>
+
+    <h2 style="text-align:center; color:#b89b4a;">🔔 إشعارات المنصة</h2>
+    
+    <div id="loader" class="loader">جاري تحميل آخر الأخبار...</div>
+    <div id="notifications-list"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <script>
+        // إعدادات Firebase الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMEoUTIMAS0mh06_SxrM2T_efDxEmEoxg",
+            authDomain: "wafaseiyunshop.firebaseapp.com",
+            databaseURL: "https://wafaseiyunshop-default-rtdb.firebaseio.com",
+            projectId: "wafaseiyunshop",
+            storageBucket: "wafaseiyunshop.firebasestorage.app",
+            messagingSenderId: "101115796279",
+            appId: "1:101115796279:web:3753efad2a443c9b6098b2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // جلب الإشعارات من فرع "news" في قاعدة البيانات
+        database.ref("news").on("value", (snapshot) => {
+            const list = document.getElementById("notifications-list");
+            const loader = document.getElementById("loader");
+            list.innerHTML = "";
+            loader.style.display = "none";
+
+            const data = snapshot.val();
+            if (!data) {
+                list.innerHTML = "<p style='text-align:center;'>لا توجد إشعارات حالياً</p>";
+                return;
+            }
+
+            // تحويل البيانات لصفوف وعرضها من الأحدث للأقدم
+            const newsItems = Object.values(data).reverse();
+
+            newsItems.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "notif-card";
+                card.onclick = () => card.classList.toggle("active");
+
+                card.innerHTML = `
+                    <div class="notif-header">
+                        <span class="notif-title">${item.title}</span>
+                        <span class="notif-date">${item.date || ''}</span>
+                    </div>
+                    <div class="notif-summary">${item.body}</div>
+                    <div class="notif-content">${item.body}</div>
+                `;
+                list.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>منصة متاجر البلاد</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    font-family:"Segoe UI", Tahoma, Arial, sans-serif;
+    background: linear-gradient(to bottom, #f7f6f2, #e6d38a);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    background:white;
+    padding:40px 30px;
+    border-radius:20px;
+    width:90%;
+    max-width:700px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.3);
+    text-align:right;
+    overflow-y:auto;
+    max-height:90vh;
+}
+
+h1{
+    color:#b89b4a;
+    font-size:32px;
+    margin-bottom:20px;
+}
+
+p{
+    font-size:18px;
+    color:#333;
+    line-height:1.6;
+    margin-bottom:15px;
+}
+
+button{
+    padding:15px 35px;
+    font-size:18px;
+    border:none;
+    border-radius:15px;
+    font-weight:bold;
+    cursor:pointer;
+    background:linear-gradient(45deg,#c9b36a,#b89b4a);
+    color:white;
+    display:block;
+    margin:25px auto 0;
+}
+
+button:hover{
+    opacity:0.9;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+    <h1>مرحبًا بك في منصة متاجر البلاد</h1>
+
+    <p>
+    منصة متاجر البلاد هي سوق إلكتروني متكامل يضم جميع متاجر منطقتك في مكان واحد. هدفنا هو تسهيل تجربة التسوق للزبائن وتمكينهم من الوصول لكل المنتجات بسهولة وسرعة.
+    </p>
+
+    <p>
+    هنا يمكنك تصفح جميع المنتجات المتوفرة وغير المتوفرة مع أسعارها والمتجر الخاص بها، كما يمكنك البحث بسهولة عن أي منتج أو متجر، ومعرفة التفاصيل الدقيقة لكل منتج، والطلب مباشرة عبر واتساب بدون أي تعقيدات.
+    </p>
+
+    <p>
+    المنصة مرنة جدًا، حيث يمكن للمتاجر تحديث منتجاتهم أسبوعيًا، إضافة أو حذف المنتجات، تعديل الأسعار، أو تغيير حالة توفر المنتج. كل ذلك يظهر مباشرة في التطبيق بدون الحاجة لأي تحديث إضافي.
+    </p>
+
+    <p>
+    نحرص على تقديم تجربة مستخدم سلسة وسهلة، مع واجهة جذابة ومتناسقة الألوان، وتصميم يريح العينين عند الاستخدام الطويل على أي جهاز، سواء كان كمبيوتر أو هاتف محمول.
+    </p>
+
+    <p>
+    نحن ملتزمون بتقديم أفضل تجربة تسوق ممكنة لك، وجعل كل عمليات الطلب والدفع أكثر سهولة ووضوحًا، بحيث يصبح التسوق من متاجرك المفضلة مجرد متعة وليست مهمة معقدة.
+    </p>
+
+    <button onclick="start()">ابدأ الآن</button>
+</div>
+
+<script>
+// التأكد إذا المستخدم دخل الصفحة قبلًا
+if(localStorage.getItem("introShown") === "true"){
+    window.location.href = "home.html";
+}
+
+function start(){
+    localStorage.setItem("introShown","true");
+    window.location.href = "home.html";
+}
+</script>
+
+</body>
+</html>

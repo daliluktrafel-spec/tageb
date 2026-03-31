@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: "Segoe UI", sans-serif;
+        background: #f7f6f2;
+        text-align: center;
+    }
+
+    .contact-box {
+        background: white;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        max-width: 450px;
+        margin: auto;
+    }
+
+    .input-group {
+        text-align: right;
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #1b1e33;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+        font-family: inherit;
+        background: #fafafa;
+    }
+
+    input:focus, textarea:focus {
+        border-color: #b89b4a;
+        outline: none;
+        background: #fff;
+    }
+
+    .btn-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-wa {
+        background: #25D366; /* لون واتساب */
+        color: white;
+    }
+
+    .btn-mail {
+        background: linear-gradient(45deg, #c9b36a, #b89b4a);
+        color: #1b1e33;
+    }
+
+    button {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:active {
+        transform: scale(0.95);
+    }
+</style>
+</head>
+<body>
+
+    <div class="contact-box">
+        <h2 style="color:#b89b4a">📞 تواصل مع إدارة المنصة</h2>
+        <p style="font-size: 14px; color: #666;">نسعد باستقبال استفساراتكم واقتراحاتكم لتطوير "متاجر البلاد"</p>
+        
+        <div class="input-group">
+            <label>الاسم الكامل:</label>
+            <input type="text" id="c_name" placeholder="مثال: أحمد محمد">
+        </div>
+
+        <div class="input-group">
+            <label>رقم الهاتف:</label>
+            <input type="tel" id="c_phone" placeholder="77XXXXXXX">
+        </div>
+
+        <div class="input-group">
+            <label>رسالتك:</label>
+            <textarea id="c_msg" rows="4" placeholder="اكتب استفسارك هنا..."></textarea>
+        </div>
+        
+        <div class="btn-container">
+            <button class="btn-wa" onclick="sendToWhatsApp()">💬 إرسال عبر واتساب</button>
+            <button class="btn-mail" onclick="sendToEmail()">📧 إرسال عبر البريد الإلكتروني</button>
+        </div>
+    </div>
+
+    <script>
+        function getValues() {
+            return {
+                name: document.getElementById("c_name").value.trim(),
+                phone: document.getElementById("c_phone").value.trim(),
+                msg: document.getElementById("c_msg").value.trim()
+            };
+        }
+
+        function sendToWhatsApp() {
+            const v = getValues();
+            if(!v.name || !v.msg) { alert("يرجى كتابة الاسم والرسالة أولاً"); return; }
+
+            const myNumber = "967774257557"; 
+            const text = `*رسالة من منصة متاجر البلاد*%0A%0A*الاسم:* ${v.name}%0A*الهاتف:* ${v.phone}%0A*الرسالة:* ${v.msg}`;
+            
+            window.open(`https://wa.me/${myNumber}?text=${text}`, '_blank');
+        }
+
+        function sendToEmail() {
+            const v = getValues();
+            if(!v.name || !v.msg) { alert("يرجى كتابة الاسم والرسالة أولاً"); return; }
+
+            const email = "daliluktrafel@gmail.com";
+            const subject = encodeURIComponent("اتصال من زبون - متاجر البلاد");
+            const body = encodeURIComponent(`الاسم: ${v.name}\nالهاتف: ${v.phone}\nالرسالة:\n${v.msg}`);
+            
+            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        }
+    </script>
+</body>
+</html>
